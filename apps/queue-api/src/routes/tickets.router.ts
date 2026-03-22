@@ -7,6 +7,8 @@ router.get('/status', TicketsController.getStatus);
 
 router.get('/history', TicketsController.getHistory);
 
+router.get('/:id', TicketsController.getTicket);
+
 router.post('/join', TicketsController.joinQueue);
 
 export default router;

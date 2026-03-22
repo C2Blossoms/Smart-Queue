@@ -16,10 +16,19 @@ export const getHistory = async (req: Request, res: Response) => {
   res.json(history);
 };
 
+export const getTicket = async (req: Request, res: Response) => {
+  const ticket = await TicketsService.getTicket(req.params.id as string);
+  if (!ticket) {
+    res.status(404).json({ message: "Ticket not found" });
+    return;
+  }
+  res.json(ticket);
+};
+
 export const joinQueue = async (req: Request, res: Response) => {
   // Validate request body using Zod
   const { pax } = joinQueueSchema.parse(req.body);
-  
+
   const ticket = await TicketsService.joinQueue(pax);
   res.status(201).json({ message: "Queue joined successfully", ticket });
 };

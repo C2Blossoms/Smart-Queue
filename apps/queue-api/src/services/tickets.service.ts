@@ -49,3 +49,8 @@ export const getHistory = async () => {
   );
   return query.rows;
 };
+
+export const getTicket = async (id: string | number) => {
+  const query = await pool.query(`SELECT * FROM tickets WHERE id = $1`, [id]);
+  return query.rows[0] || null;
+};
