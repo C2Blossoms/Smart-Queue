@@ -7,7 +7,7 @@ interface Ticket {
   queue_number: number;
   pax: number;
   status: "COMPLETED" | "SKIPPED";
-  updated_at: string;
+  created_at: string;
 }
 
 export default function QueueHistory() {
@@ -73,7 +73,7 @@ export default function QueueHistory() {
                   {ticket.status}
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium">
-                  {new Date(ticket.updated_at).toLocaleTimeString()}
+                  {new Date(ticket.created_at).toLocaleTimeString()}
                 </span>
               </div>
             </div>
