@@ -11,6 +11,11 @@ export const getStatus = async (req: Request, res: Response) => {
   res.json(status);
 };
 
+export const getHistory = async (req: Request, res: Response) => {
+  const history = await TicketsService.getHistory();
+  res.json(history);
+};
+
 export const joinQueue = async (req: Request, res: Response) => {
   // Validate request body using Zod
   const { pax } = joinQueueSchema.parse(req.body);

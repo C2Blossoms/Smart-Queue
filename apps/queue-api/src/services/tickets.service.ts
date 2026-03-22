@@ -42,3 +42,10 @@ export const joinQueue = async (pax: number) => {
 
   return ticket;
 };
+
+export const getHistory = async () => {
+  const query = await pool.query(
+    `SELECT * FROM tickets WHERE status IN ('COMPLETED', 'SKIPPED') ORDER BY updated_at DESC LIMIT 20`
+  );
+  return query.rows;
+};
