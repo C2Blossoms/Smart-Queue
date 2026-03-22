@@ -1,63 +1,37 @@
-import express from 'express';
-import { WebSocketServer, WebSocket } from 'ws';
-import { createServer } from 'http';
-import { createClient } from 'redis';
-import dotenv from 'dotenv';
-import cors from 'cors';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import path from "node:path";
+import http from "node:http";
+import { connectRedis } from "./config/redis.js";
+import { setupWebSocket } from "./socket/socketSetup.js";
 
-dotenv.config({ path: '../../.env' });
-
-const PORT = parseInt(process.env.PORT || '3002');
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
+const PORT = Math.floor(Number.parseInt(process.env.LIVE_BOARD_PORT || process.env.PORT || "3002", 10));
+
 app.use(cors());
+app.use(express.json());
 
-const server = createServer(app);
-const wss = new WebSocketServer({ server });
-
-// Redis Subscriber
-const redisSubscriber = createClient({ url: REDIS_URL });
-
-redisSubscriber.on('error', (err) => console.error('Redis Subscriber Error:', err));
-
-const clients = new Set<WebSocket>();
-
-wss.on('connection', (ws) => {
-  console.log('Client connected to WebSocket');
-  clients.add(ws);
-
-  ws.on('close', () => {
-    console.log('Client disconnected');
-    clients.delete(ws);
-  });
+// Basic healthcheck
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", message: "🚀 Live Board API is running with WebSockets!" });
 });
 
-// Subscribe to Redis events
-const initRedis = async () => {
-  await redisSubscriber.connect();
-  console.log('✅ Live Board connected to Redis');
-  
-  await redisSubscriber.subscribe('queue_events', (message) => {
-    console.log('Received queue event:', message);
-    
-    // Broadcast to all connected clients
-    for (const client of clients) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    }
+const server = http.createServer(app);
+
+// Attach WebSocket Server onto the standard HTTP server
+setupWebSocket(server);
+
+const startServer = async () => {
+  await connectRedis();
+
+  server.listen(PORT, () => {
+    console.log(`=================================`);
+    console.log(`📡 Live Board API running on port ${PORT}`);
+    console.log(`=================================`);
   });
 };
 
-initRedis().catch(console.error);
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Live Board API is up' });
-});
-
-server.listen(PORT, () => {
-  console.log('=================================');
-  console.log(`📡 Live Board API running on port ${PORT}`);
-  console.log('=================================');
-});
+startServer();
