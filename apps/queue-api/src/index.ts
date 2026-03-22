@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
 
-const PORT = Math.floor(Number.parseInt(process.env.PORT || "3001"));
+const PORT = Math.floor(Number.parseInt(process.env.QUEUE_API_PORT || "3001"));
 
 app.use(cors());
 app.use(express.json());

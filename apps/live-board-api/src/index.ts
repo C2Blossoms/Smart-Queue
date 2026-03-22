@@ -9,14 +9,19 @@ import { setupWebSocket } from "./socket/socketSetup.js";
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
-const PORT = Math.floor(Number.parseInt(process.env.LIVE_BOARD_PORT || process.env.PORT || "3002", 10));
+const PORT = Math.floor(
+  Number.parseInt(process.env.LIVE_BOARD_PORT || "3002", 10),
+);
 
 app.use(cors());
 app.use(express.json());
 
 // Basic healthcheck
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "🚀 Live Board API is running with WebSockets!" });
+  res.json({
+    status: "OK",
+    message: "🚀 Live Board API is running with WebSockets!",
+  });
 });
 
 const server = http.createServer(app);
