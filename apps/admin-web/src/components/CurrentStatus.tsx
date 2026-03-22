@@ -9,6 +9,7 @@ export default function CurrentStatus() {
   const fetchStatus = async () => {
     try {
       const res = await fetch("http://localhost:3001/api/tickets/status");
+      if (!res.ok) throw new Error("Status API returned " + res.status);
       const data = await res.json();
       setCurrentCalled(data.current_called);
       setWaitingCount(data.waiting_count);

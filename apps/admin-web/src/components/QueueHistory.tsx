@@ -16,6 +16,7 @@ export default function QueueHistory() {
   const fetchHistory = async () => {
     try {
       const res = await fetch("http://localhost:3001/api/tickets/history");
+      if (!res.ok) throw new Error("History API returned " + res.status);
       const data = await res.json();
       setHistory(data);
     } catch (err) {
