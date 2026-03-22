@@ -21,7 +21,6 @@ export default function CurrentStatus() {
   useEffect(() => {
     fetchStatus();
 
-    // Connect to WebSocket from live-board-api
     const ws = new WebSocket("ws://localhost:3002");
 
     ws.onmessage = (event) => {

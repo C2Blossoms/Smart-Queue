@@ -26,7 +26,7 @@ export const setupWebSocket = (server: Server) => {
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(message); // Forward the exact JSON string
+        client.send(message);
       }
     });
   });

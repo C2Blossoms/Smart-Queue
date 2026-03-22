@@ -17,7 +17,6 @@ const PORT = Math.floor(Number.parseInt(process.env.QUEUE_API_PORT || "3001"));
 app.use(cors());
 app.use(express.json());
 
-// Testing API
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({
     status: "OK",
@@ -27,10 +26,8 @@ app.get("/health", (req: Request, res: Response) => {
 
 app.use("/api", mainRouter);
 
-// Error Handling Middleware (must be after all routes)
 app.use(errorHandler);
 
-// Start Server
 const startServer = async () => {
   await initDB();
   await connectRedis();

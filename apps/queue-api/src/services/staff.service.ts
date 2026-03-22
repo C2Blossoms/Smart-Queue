@@ -21,8 +21,9 @@ export const getActive = async () => {
 };
 
 export const callNext = async () => {
-  // Self-healing: if admin calls next without completing previous, mark it skipped
-  await pool.query(`UPDATE tickets SET status = 'SKIPPED' WHERE status = 'CALLED'`);
+  await pool.query(
+    `UPDATE tickets SET status = 'SKIPPED' WHERE status = 'CALLED'`,
+  );
   const findResult = await pool.query(
     `SELECT * FROM tickets WHERE status = 'WAITING' ORDER BY id ASC LIMIT 1`,
   );
@@ -57,13 +58,21 @@ export const callNext = async () => {
 };
 
 export const completeTicket = async (id: string | number) => {
-  await pool.query(`UPDATE tickets SET status = 'COMPLETED' WHERE id = $1`, [id]);
-  await redisClient.publish("queue_events", JSON.stringify({ type: "TICKET_COMPLETED", payload: { id } }));
+  await pool.query(`UPDATE tickets SET status = 'COMPLETED' WHERE id = $1`, [
+    id,
+  ]);
+  await redisClient.publish(
+    "queue_events",
+    JSON.stringify({ type: "TICKET_COMPLETED", payload: { id } }),
+  );
   await broadcastNext();
 };
 
 export const skipTicket = async (id: string | number) => {
   await pool.query(`UPDATE tickets SET status = 'SKIPPED' WHERE id = $1`, [id]);
-  await redisClient.publish("queue_events", JSON.stringify({ type: "TICKET_SKIPPED", payload: { id } }));
+  await redisClient.publish(
+    "queue_events",
+    JSON.stringify({ type: "TICKET_SKIPPED", payload: { id } }),
+  );
   await broadcastNext();
 };

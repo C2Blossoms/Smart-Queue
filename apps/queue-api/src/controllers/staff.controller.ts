@@ -1,5 +1,5 @@
-import type { Request, Response } from 'express';
-import * as StaffService from '../services/staff.service.js';
+import type { Request, Response } from "express";
+import * as StaffService from "../services/staff.service.js";
 
 export const getActive = async (req: Request, res: Response) => {
   const ticket = await StaffService.getActive();
@@ -8,12 +8,12 @@ export const getActive = async (req: Request, res: Response) => {
 
 export const callNext = async (req: Request, res: Response) => {
   const ticket = await StaffService.callNext();
-  
+
   if (!ticket) {
     res.status(404);
     throw new Error("No waiting tickets");
   }
-  
+
   res.json({ message: "Call next success", ticket });
 };
 

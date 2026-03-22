@@ -16,14 +16,11 @@ export const getStatus = async () => {
 };
 
 export const joinQueue = async (pax: number) => {
-  // Generate date prefix (YYYY-MM-DD)
   const today = new Date().toISOString().split("T")[0];
   const redisKey = `queue_number:${today}`;
 
-  // Get new queue number (atomic)
   const newQueueNumber = await redisClient.incr(redisKey);
 
-  // Save to Postgres
   const result = await pool.query(
     `INSERT INTO tickets (queue_number, pax, status) VALUES ($1, $2, 'WAITING') RETURNING *`,
     [newQueueNumber, pax],
@@ -31,7 +28,6 @@ export const joinQueue = async (pax: number) => {
 
   const ticket = result.rows[0];
 
-  // Publish event queue_events
   await redisClient.publish(
     "queue_events",
     JSON.stringify({
@@ -51,10 +47,13 @@ export const getHistory = async () => {
 };
 
 export const getTicket = async (id: string | number) => {
-  const query = await pool.query(`
+  const query = await pool.query(
+    `
     SELECT t.*, 
     (SELECT count(*) FROM tickets w WHERE w.status = 'WAITING' AND w.id < t.id) as queues_ahead
     FROM tickets t WHERE t.id = $1
-  `, [id]);
+  `,
+    [id],
+  );
   return query.rows[0] || null;
 };

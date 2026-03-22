@@ -26,9 +26,7 @@ export const getTicket = async (req: Request, res: Response) => {
 };
 
 export const joinQueue = async (req: Request, res: Response) => {
-  // Validate request body using Zod
   const { pax } = joinQueueSchema.parse(req.body);
-
   const ticket = await TicketsService.joinQueue(pax);
   res.status(201).json({ message: "Queue joined successfully", ticket });
 };

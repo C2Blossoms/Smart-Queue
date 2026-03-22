@@ -16,7 +16,6 @@ const PORT = Math.floor(
 app.use(cors());
 app.use(express.json());
 
-// Basic healthcheck
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
