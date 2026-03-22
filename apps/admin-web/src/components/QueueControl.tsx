@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function QueueControl() {
   const [currentTicket, setCurrentTicket] = useState<{ id: number; queue_number: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/queue/active")
+      .then(res => res.json())
+      .then(data => {
+        if (data.ticket) setCurrentTicket(data.ticket);
+      })
+      .catch(console.error);
+  }, []);
 
   const callNext = async () => {
     setIsLoading(true);

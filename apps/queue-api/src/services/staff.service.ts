@@ -13,7 +13,16 @@ export const broadcastNext = async () => {
   );
 };
 
+export const getActive = async () => {
+  const result = await pool.query(
+    `SELECT * FROM tickets WHERE status = 'CALLED' ORDER BY id ASC LIMIT 1`,
+  );
+  return result.rows[0] || null;
+};
+
 export const callNext = async () => {
+  // Self-healing: if admin calls next without completing previous, mark it skipped
+  await pool.query(`UPDATE tickets SET status = 'SKIPPED' WHERE status = 'CALLED'`);
   const findResult = await pool.query(
     `SELECT * FROM tickets WHERE status = 'WAITING' ORDER BY id ASC LIMIT 1`,
   );

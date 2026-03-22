@@ -51,6 +51,10 @@ export const getHistory = async () => {
 };
 
 export const getTicket = async (id: string | number) => {
-  const query = await pool.query(`SELECT * FROM tickets WHERE id = $1`, [id]);
+  const query = await pool.query(`
+    SELECT t.*, 
+    (SELECT count(*) FROM tickets w WHERE w.status = 'WAITING' AND w.id < t.id) as queues_ahead
+    FROM tickets t WHERE t.id = $1
+  `, [id]);
   return query.rows[0] || null;
 };

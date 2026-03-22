@@ -8,6 +8,7 @@ interface Ticket {
   queue_number: number;
   pax: number;
   status: string;
+  queues_ahead: string; // The db count() returns a string
 }
 
 export default function TicketPage() {
@@ -61,8 +62,8 @@ export default function TicketPage() {
   if (loading) return <div className="min-h-[100dvh] flex items-center justify-center bg-slate-50"><div className="animate-spin h-10 w-10 border-4 border-indigo-600 border-t-transparent rounded-full"></div></div>;
   if (error || !ticket) return <div className="min-h-[100dvh] flex items-center justify-center bg-slate-50 text-rose-500 font-bold">Ticket not found or network error.</div>;
 
-  const queuesAhead = currentCalled ? Math.max(0, ticket.queue_number - currentCalled) : 0;
-  // If my number is <= currentCalled, it's my turn (unless already completed)
+  const queuesAhead = parseInt(ticket.queues_ahead || "0", 10);
+
   const isMyTurn = currentCalled && currentCalled >= ticket.queue_number && ticket.status !== 'COMPLETED' && ticket.status !== 'SKIPPED';
   const isDone = ticket.status === 'COMPLETED' || ticket.status === 'SKIPPED';
 
@@ -113,7 +114,7 @@ export default function TicketPage() {
               </div>
             )}
             {isMyTurn && (
-              <div className="bg-teal-50 p-4 rounded-2xl border border-teal-100 text-center animate-bounce mt-2 shadow-sm">
+              <div className="bg-teal-50 p-4 rounded-2xl border border-teal-100 text-center mt-2 shadow-sm">
                 <span className="text-teal-700 font-bold">Please proceed to the counter</span>
               </div>
             )}

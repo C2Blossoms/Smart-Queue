@@ -1,6 +1,11 @@
 import type { Request, Response } from 'express';
 import * as StaffService from '../services/staff.service.js';
 
+export const getActive = async (req: Request, res: Response) => {
+  const ticket = await StaffService.getActive();
+  res.json({ ticket });
+};
+
 export const callNext = async (req: Request, res: Response) => {
   const ticket = await StaffService.callNext();
   
