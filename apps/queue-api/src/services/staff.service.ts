@@ -48,13 +48,13 @@ export const callNext = async () => {
 };
 
 export const completeTicket = async (id: string | number) => {
-  await pool.query(`UPDATE tickets SET status = 'COMPLETED' WHERE id = $1`, [
-    id,
-  ]);
+  await pool.query(`UPDATE tickets SET status = 'COMPLETED' WHERE id = $1`, [id]);
+  await redisClient.publish("queue_events", JSON.stringify({ type: "TICKET_COMPLETED", payload: { id } }));
   await broadcastNext();
 };
 
 export const skipTicket = async (id: string | number) => {
   await pool.query(`UPDATE tickets SET status = 'SKIPPED' WHERE id = $1`, [id]);
+  await redisClient.publish("queue_events", JSON.stringify({ type: "TICKET_SKIPPED", payload: { id } }));
   await broadcastNext();
 };
