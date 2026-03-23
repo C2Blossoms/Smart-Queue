@@ -1,6 +1,6 @@
 "use client";
-
 import { useEffect, useState } from "react";
+import { API_URL, WS_URL } from "@/lib/config";
 
 interface Ticket {
   id: number;
@@ -15,7 +15,7 @@ export default function QueueHistory() {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/tickets/history");
+      const res = await fetch(`${API_URL}/api/tickets/history`);
       if (!res.ok) throw new Error("History API returned " + res.status);
       const data = await res.json();
       setHistory(data);
@@ -27,7 +27,7 @@ export default function QueueHistory() {
   useEffect(() => {
     fetchHistory();
 
-    const ws = new WebSocket("ws://localhost:3002");
+    const ws = new WebSocket(WS_URL);
 
     ws.onmessage = (event) => {
       try {

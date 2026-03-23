@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/config";
 
 export default function Home() {
   const [pax, setPax] = useState(1);
@@ -11,7 +12,7 @@ export default function Home() {
   const handleJoin = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/api/tickets/join", {
+      const res = await fetch(`${API_URL}/api/tickets/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pax })

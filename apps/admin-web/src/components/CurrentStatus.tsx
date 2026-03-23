@@ -1,6 +1,6 @@
 "use client";
-
 import { useEffect, useState } from "react";
+import { API_URL, WS_URL } from "@/lib/config";
 
 export default function CurrentStatus() {
   const [currentCalled, setCurrentCalled] = useState<number | null>(null);
@@ -8,7 +8,7 @@ export default function CurrentStatus() {
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/tickets/status");
+      const res = await fetch(`${API_URL}/api/tickets/status`);
       if (!res.ok) throw new Error("Status API returned " + res.status);
       const data = await res.json();
       setCurrentCalled(data.current_called);
@@ -21,7 +21,7 @@ export default function CurrentStatus() {
   useEffect(() => {
     fetchStatus();
 
-    const ws = new WebSocket("ws://localhost:3002");
+    const ws = new WebSocket(WS_URL);
 
     ws.onmessage = (event) => {
       try {

@@ -1,13 +1,12 @@
-"use client";
-
 import { useState, useEffect } from "react";
+import { API_URL } from "@/lib/config";
 
 export default function QueueControl() {
   const [currentTicket, setCurrentTicket] = useState<{ id: number; queue_number: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/queue/active")
+    fetch(`${API_URL}/api/queue/active`)
       .then(res => res.json())
       .then(data => {
         if (data.ticket) setCurrentTicket(data.ticket);
@@ -18,7 +17,7 @@ export default function QueueControl() {
   const callNext = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/api/queue/call-next", { method: "POST" });
+      const res = await fetch(`${API_URL}/api/queue/call-next`, { method: "POST" });
       if (res.ok) {
         const data = await res.json();
         setCurrentTicket(data.ticket);
@@ -37,7 +36,7 @@ export default function QueueControl() {
     if (!currentTicket) return;
     setIsLoading(true);
     try {
-      await fetch(`http://localhost:3001/api/queue/${currentTicket.id}/complete`, { method: "PUT" });
+      await fetch(`${API_URL}/api/queue/${currentTicket.id}/complete`, { method: "PUT" });
       setCurrentTicket(null);
     } catch (err) {
       console.error(err);
@@ -50,7 +49,7 @@ export default function QueueControl() {
     if (!currentTicket) return;
     setIsLoading(true);
     try {
-      await fetch(`http://localhost:3001/api/queue/${currentTicket.id}/skip`, { method: "PUT" });
+      await fetch(`${API_URL}/api/queue/${currentTicket.id}/skip`, { method: "PUT" });
       setCurrentTicket(null);
     } catch (err) {
       console.error(err);

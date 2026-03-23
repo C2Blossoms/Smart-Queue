@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { API_URL, WS_URL } from "@/lib/config";
 
 interface Ticket {
   id: number;
@@ -21,8 +22,8 @@ export default function TicketPage() {
   const fetchTicketAndStatus = async () => {
     try {
       const [ticketRes, statusRes] = await Promise.all([
-        fetch(`http://localhost:3001/api/tickets/${id}`),
-        fetch("http://localhost:3001/api/tickets/status")
+        fetch(`${API_URL}/api/tickets/${id}`),
+        fetch(`${API_URL}/api/tickets/status`)
       ]);
       
       if (!ticketRes.ok || !statusRes.ok) throw new Error("API failed");
@@ -44,7 +45,7 @@ export default function TicketPage() {
     if (!id) return;
     fetchTicketAndStatus();
 
-    const ws = new WebSocket("ws://localhost:3002");
+    const ws = new WebSocket(WS_URL);
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
