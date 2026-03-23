@@ -9,7 +9,7 @@ import { setupWebSocket } from "./socket/socketSetup.js";
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
-const PORT = await fetch(`${process.env.NEXT_PUBLIC_WS_URL}`);
+const PORT = process.env.PORT || 3002;
 
 app.use(cors());
 app.use(express.json());

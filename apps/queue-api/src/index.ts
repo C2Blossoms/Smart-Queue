@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
 
-const PORT = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
