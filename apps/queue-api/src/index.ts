@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
 
-const PORT = Math.floor(Number.parseInt(process.env.QUEUE_API_PORT || "3001"));
+const PORT = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
 
 app.use(cors());
 app.use(express.json());
@@ -34,7 +34,7 @@ const startServer = async () => {
 
   app.listen(PORT, () => {
     console.log(`=================================`);
-    console.log(`🚀 Queue API is running on port ${PORT}`);
+    console.log(`🚀 Queue API is running on port`, PORT);
     console.log(`=================================`);
   });
 };

@@ -4,9 +4,9 @@ import path from "node:path";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
-export const redisClient = createClient({
-  url: process.env.REDIS_URL || "redis://localhost:6379",
-});
+export const redisClient = createClient(
+  process.env.REDIS_URL ? { url: process.env.REDIS_URL } : {}
+);
 
 redisClient.on("error", (err) => console.error("❌ Redis Client Error:", err));
 

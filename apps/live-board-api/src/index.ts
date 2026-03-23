@@ -9,9 +9,7 @@ import { setupWebSocket } from "./socket/socketSetup.js";
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
 const app = express();
-const PORT = Math.floor(
-  Number.parseInt(process.env.LIVE_BOARD_PORT || "3002", 10),
-);
+const PORT = await fetch(`${process.env.NEXT_PUBLIC_WS_URL}`);
 
 app.use(cors());
 app.use(express.json());
@@ -33,7 +31,7 @@ const startServer = async () => {
 
   server.listen(PORT, () => {
     console.log(`=================================`);
-    console.log(`📡 Live Board API running on port ${PORT}`);
+    console.log(`📡 Live Board API running on port`, PORT);
     console.log(`=================================`);
   });
 };
