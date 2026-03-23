@@ -4,13 +4,20 @@ import path from "node:path";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env") });
 
-export const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: Number.parseInt(process.env.DB_PORT || "5432"),
-});
+export const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+        ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false },
+      }
+    : {
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASSWORD,
+        port: Number.parseInt(process.env.DB_PORT || "5432"),
+      }
+);
 
 export const initDB = async () => {
   const client = await pool.connect();
