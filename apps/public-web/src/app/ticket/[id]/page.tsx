@@ -45,6 +45,8 @@ export default function TicketPage() {
     if (!id) return;
     fetchTicketAndStatus();
 
+    if (!WS_URL) return;
+
     const ws = new WebSocket(WS_URL);
     ws.onmessage = (event) => {
       try {

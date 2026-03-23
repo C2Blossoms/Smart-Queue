@@ -21,6 +21,8 @@ export default function CurrentStatus() {
   useEffect(() => {
     fetchStatus();
 
+    if (!WS_URL) return;
+
     const ws = new WebSocket(WS_URL);
 
     ws.onmessage = (event) => {
